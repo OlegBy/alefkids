@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 Иврит-Алеф — Учим иврит!</title>
+<style>
+/* ===== VARIABLES ===== */
+:root {
+  --coral:   #FF6B6B;
+  --coral-l: #FFF0F0;
+  --teal:    #3ECFBB;
+  --teal-l:  #E0FAF7;
+  --yellow:  #FFD93D;
+  --yellow-l:#FFFBE5;
+  --purple:  #9B7FE8;
+  --purple-l:#F0EBFF;
+  --green:   #5BC58A;
+  --green-l: #E8F9F0;
+  --bg:      #FFF8EE;
+  --card:    #FFFFFF;
+  --text:    #2D3047;
+  --muted:   #8892A4;
+  --border:  #EAE4D8;
+  --r:       18px;
+  --shadow:  0 8px 32px rgba(45,48,71,.10);
+  --shadow2: 0 14px 48px rgba(45,48,71,.17);
+}
+
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { font-family: inherit; }
+
+/* ===== BASE ===== */
+body {
+  font-family: 'Segoe UI', 'Arial Hebrew', Arial, 'Times New Roman', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px 48px;
+  background-image:
+    radial-gradient(ellipse at 10% 30%, rgba(255,107,107,.09) 0%, transparent 55%),
+    radial-gradient(ellipse at 90% 70%, rgba(62,207,187,.09) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 10%, rgba(255,217,61,.07) 0%, transparent 50%);
+}
+
+/* ===== SCREENS ===== */
+.screen { display: none; width: 100%; max-width: 660px; }
+.screen.active { display: block; }
+
+/* ===== CARD ===== */
+.card {
+  background: var(--card);
+  border-radius: var(--r);
+  padding: 28px 32px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+}
+
+/* ===== TOP BAR ===== */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.logo { font-size: 20px; font-weight: 900; color: var(--coral); letter-spacing: -.5px; }
+.stars-row { display: flex; gap: 5px; font-size: 20px; }
+
+/* ===== PROGRESS ===== */
+.prog-wrap {
+  background: var(--border);
+  border-radius: 10px;
+  height: 13px;
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--coral), var(--yellow));
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+  min-width: 4px;
+}
+
+/* ===== EXERCISE HEADER ===== */
+.ex-head { text-align: center; margin-bottom: 20px; }
+.ex-badge {
+  display: inline-block;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+.ex-title  { font-size: 24px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+.ex-sub    { font-size: 15px; color: var(--muted); }
+
+/* ===== Q DOTS ===== */
+.qdots { display: flex; gap: 8px; justify-content: center; margin-bottom: 18px; }
+.qdot  {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background .25s, transform .25s;
+}
+.qdot.done    { background: var(--teal); }
+.qdot.current { background: var(--coral); transform: scale(1.35); }
+
+/* ===== BIG LETTER ===== */
+.big-letter {
+  font-size: 120px;
+  line-height: 1;
+  text-align: center;
+  direction: rtl;
+  margin: 10px 0 6px;
+  color: var(--text);
+  text-shadow: 3px 3px 0 rgba(0,0,0,.05);
+  animation: popIn .4s cubic-bezier(.175,.885,.32,1.275) both;
+  user-select: none;
+}
+.big-emoji {
+  font-size: 72px; text-align: center;
+  margin: 8px 0 4px;
+  animation: popIn .4s cubic-bezier(.175,.885,.32,1.275) both;
+  line-height: 1.1;
+}
+.big-word  { font-size: 22px; font-weight: 700; text-align: center; color: var(--text); }
+.hint-text { font-size: 14px; color: var(--muted); text-align: center; margin-bottom: 16px; }
+
+/* ===== SPEAK BUTTON ===== */
+.speak-btn {
+  background: none;
+  border: 2px solid var(--teal);
+  color: var(--teal);
+  border-radius: 50%;
+  width: 38px; height: 38px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px auto 12px;
+  transition: all .2s;
+}
+.speak-btn:hover { background: var(--teal); color: #fff; transform: scale(1.1); }
+
+/* ===== CHOICES ===== */
+.choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+  margin-top: 6px;
+}
+.choice-btn {
+  padding: 18px 12px;
+  background: var(--card);
+  border: 3px solid var(--border);
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .15s, box-shadow .15s;
+  text-align: center;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+}
+.choice-btn:hover:not(:disabled) {
+  border-color: var(--teal);
+  background: var(--teal-l);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px rgba(62,207,187,.22);
+}
+.choice-btn.correct {
+  border-color: var(--green);
+  background: var(--green-l);
+  color: #1a7a48;
+  animation: correctPop .35s ease;
+}
+.choice-btn.wrong {
+  border-color: var(--coral);
+  background: var(--coral-l);
+  color: #b71c1c;
+  animation: shake .4s ease;
+}
+.choice-btn:disabled { cursor: default; }
+.choice-btn.letter-opt { font-size: 34px; font-weight: 900; }
+
+/* ===== MATCHING ===== */
+.match-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+.match-col { display: flex; flex-direction: column; gap: 9px; }
+.match-item {
+  padding: 14px 10px;
+  border: 3px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .2s;
+  background: var(--card);
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+.match-item:hover:not(.matched):not(.selected) {
+  border-color: var(--teal);
+  background: var(--teal-l);
+  transform: translateY(-2px);
+}
+.match-item.selected {
+  border-color: var(--coral);
+  background: var(--coral-l);
+  transform: scale(1.03);
+  box-shadow: 0 4px 14px rgba(255,107,107,.2);
+}
+.match-item.matched {
+  border-color: var(--green);
+  background: var(--green-l);
+  opacity: .62;
+  cursor: not-allowed;
+  animation: matchPop .45s ease;
+}
+.match-item.wrong-shake { animation: shake .38s ease; }
+.heb-word  { font-size: 24px; font-weight: 800; direction: rtl; color: var(--text); line-height:1.2; }
+.translit  { font-size: 11px; color: var(--muted); direction: ltr; }
+.m-emoji   { font-size: 26px; }
+.m-text    { font-size: 13px; color: var(--muted); }
+.match-fb  { text-align: center; margin-top: 14px; min-height: 24px; font-weight: 700; font-size: 15px; }
+
+/* ===== MASCOT ===== */
+.mascot-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-top: 4px;
+}
+.mascot-icon { font-size: 52px; animation: bounce 2s ease-in-out infinite; flex-shrink: 0; }
+.bubble {
+  background: var(--teal-l);
+  border: 2px solid var(--teal);
+  border-radius: 14px 14px 14px 4px;
+  padding: 12px 16px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.5;
+  flex: 1;
+  animation: fadeSlide .3s ease;
+}
+
+/* ===== PRIMARY BUTTON ===== */
+.btn {
+  display: block; width: 100%;
+  padding: 17px;
+  border: none;
+  border-radius: 14px;
+  font-size: 17px; font-weight: 800;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  text-align: center;
+}
+.btn-coral {
+  background: linear-gradient(135deg, var(--coral) 0%, #FF8E53 100%);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(255,107,107,.38);
+}
+.btn-coral:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(255,107,107,.50); }
+.btn-teal {
+  background: linear-gradient(135deg, var(--teal) 0%, #29B8A5 100%);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(62,207,187,.38);
+}
+.btn-teal:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(62,207,187,.50); }
+
+/* ===== WELCOME ===== */
+.welcome-emoji { font-size: 80px; text-align: center; margin-bottom: 6px; animation: bounce 2s ease-in-out infinite; }
+.welcome-title { font-size: 52px; font-weight: 900; text-align: center; color: var(--text); letter-spacing: -1px; direction: rtl; }
+.welcome-sub   { font-size: 17px; color: var(--muted); text-align: center; margin: 8px 0 24px; line-height: 1.5; }
+.aleph-grid {
+  display: flex; flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0 24px;
+}
+.aleph-tile {
+  width: 50px; height: 50px;
+  border-radius: 12px;
+  background: var(--yellow-l);
+  border: 2px solid var(--yellow);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 800; direction: rtl;
+  cursor: pointer;
+  transition: transform .2s, background .2s;
+  animation: fadeSlide .3s ease both;
+  color: var(--text);
+}
+.aleph-tile:hover { transform: scale(1.18) rotate(4deg); background: var(--yellow); }
+.tasks-box {
+  background: var(--yellow-l);
+  border: 2px solid var(--yellow);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.9;
+}
+
+/* ===== RESULT ===== */
+.res-emoji  { font-size: 64px; text-align: center; margin-bottom: 6px; }
+.res-title  { font-size: 28px; font-weight: 900; text-align: center; color: var(--text); margin-bottom: 6px; }
+.res-text   { font-size: 15px; color: var(--muted); text-align: center; margin-bottom: 22px; line-height: 1.5; }
+.res-stars  { display: flex; justify-content: center; gap: 14px; font-size: 50px; margin: 14px 0 22px; }
+.res-star   { opacity: .18; transition: all .4s ease; }
+.res-star.earned { opacity: 1; animation: starPop .5s cubic-bezier(.175,.885,.32,1.275) both; }
+
+/* ===== FINALE ===== */
+.fin-trophy { font-size: 88px; text-align: center; margin: 10px 0; animation: trophySpin .8s cubic-bezier(.175,.885,.32,1.275) both; }
+.fin-title  { font-size: 38px; font-weight: 900; text-align: center; color: var(--text); }
+.fin-sub    { font-size: 17px; color: var(--muted); text-align: center; margin: 10px 0 20px; }
+.fin-info   {
+  background: var(--yellow-l);
+  border: 2px solid var(--yellow);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 15px;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.9;
+}
+.fin-letters { font-size: 26px; direction: rtl; letter-spacing: 4px; margin-top: 6px; }
+.total-stars { display: flex; justify-content: center; gap: 8px; font-size: 42px; margin: 10px 0 24px; }
+
+/* ===== CONFETTI ===== */
+#confetti {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9000;
+}
+.cp {
+  position: absolute;
+  top: -12px;
+  animation: fall linear both;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes popIn {
+  0%   { transform: scale(.25) rotate(-10deg); opacity: 0; }
+  100% { transform: scale(1)   rotate(0deg);   opacity: 1; }
+}
+@keyframes correctPop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.09); }
+  100% { transform: scale(1); }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%  { transform: translateX(-7px); }
+  40%  { transform: translateX(7px); }
+  60%  { transform: translateX(-5px); }
+  80%  { transform: translateX(4px); }
+}
+@keyframes matchPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-9px); }
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes starPop {
+  0%   { transform: scale(0) rotate(-30deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes trophySpin {
+  0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+@keyframes fall {
+  0%   { transform: translateY(0)    rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+  .card { padding: 20px 18px; }
+  .big-letter { font-size: 90px; }
+  .choices { gap: 9px; }
+  .choice-btn { font-size: 15px; padding: 14px 10px; }
+  .choice-btn.letter-opt { font-size: 28px; }
+  .match-grid { gap: 8px; }
+  .aleph-tile { width: 44px; height: 44px; font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CONFETTI -->
+<div id="confetti"></div>
+
+<!-- ============================================================ -->
+<!-- SCREEN: WELCOME                                              -->
+<!-- ============================================================ -->
+<div id="s-welcome" class="screen active">
+  <div class="card" style="margin-top:30px; animation: fadeSlide .5s ease both;">
+    <div class="welcome-emoji">🦁</div>
+    <div class="welcome-title">שלום!</div>
+    <div class="welcome-sub">Привет! Я Ари — твой проводник в мир иврита.<br>Сегодня мы узнаем буквы и слова!</div>
+    <div class="aleph-grid" id="aleph-grid"></div>
+    <div class="tasks-box">
+      🎯 Тебя ждут <strong>3 задания</strong>:<br>
+      <span style="color:var(--coral)">●</span> <strong>Задание 1</strong> — Угадай букву<br>
+      <span style="color:var(--teal)">●</span> <strong>Задание 2</strong> — Найди пару<br>
+      <span style="color:var(--purple)">●</span> <strong>Задание 3</strong> — Первая буква
+    </div>
+    <button class="btn btn-coral" onclick="startEx(1)">Начать! 🚀</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN: EXERCISE                                             -->
+<!-- ============================================================ -->
+<div id="s-exercise" class="screen">
+  <div style="animation: fadeSlide .4s ease both;">
+    <div class="topbar">
+      <div class="logo">🦁 Иврит-Алеф</div>
+      <div class="stars-row" id="hdr-stars"></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="card" style="animation: fadeSlide .4s .1s ease both;">
+    <div class="ex-head">
+      <div class="ex-badge" id="ex-badge">Задание 1</div>
+      <div class="ex-title"  id="ex-title">Угадай букву</div>
+      <div class="ex-sub"    id="ex-sub">Как называется эта буква?</div>
+    </div>
+    <div class="qdots" id="qdots"></div>
+    <div id="ex-body"></div>
+  </div>
+
+  <div class="mascot-row" id="mascot" style="display:none; animation: fadeSlide .3s ease both;">
+    <div class="mascot-icon">🦁</div>
+    <div class="bubble" id="mascot-txt">Молодец!</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN: RESULT                                               -->
+<!-- ============================================================ -->
+<div id="s-result" class="screen">
+  <div class="card" style="text-align:center; margin-top:36px; animation: fadeSlide .5s ease both;">
+    <div class="res-emoji" id="res-emoji">🎉</div>
+    <div class="res-title"  id="res-title">Отлично!</div>
+    <div class="res-stars">
+      <span class="res-star" id="st1">⭐</span>
+      <span class="res-star" id="st2">⭐</span>
+      <span class="res-star" id="st3">⭐</span>
+    </div>
+    <div class="res-text" id="res-text"></div>
+    <button class="btn btn-coral" id="res-btn">Дальше →</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN: FINALE                                               -->
+<!-- ============================================================ -->
+<div id="s-finale" class="screen">
+  <div class="card" style="text-align:center; margin-top:28px; animation: fadeSlide .5s ease both;">
+    <div class="fin-trophy">🏆</div>
+    <div class="fin-title">יופי! Ура!</div>
+    <div class="fin-sub">Ты прошёл все задания курса Иврит-Алеф!</div>
+    <div class="total-stars" id="fin-stars"></div>
+    <div class="fin-info">
+      Сегодня ты узнал:<br>
+      <strong>10 букв</strong> ивритского алфавита и <strong>6 слов</strong> на иврите!
+      <div class="fin-letters">א ב ג ד ה ו ז ח ט י</div>
+    </div>
+    <button class="btn btn-teal" onclick="resetGame()">Сыграть ещё раз! 🔄</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCRIPT                                                       -->
+<!-- ============================================================ -->
+<script>
+/* =========================================================== */
+/* DATA                                                         */
+/* =========================================================== */
+const EX1 = [
+  { letter:"א", correct:"Алеф",  opts:["Алеф","Бет","Гимел","Далет"] },
+  { letter:"ב", correct:"Бет",   opts:["Алеф","Бет","Вав","Хей"] },
+  { letter:"ג", correct:"Гимел", opts:["Гимел","Далет","Зайн","Хей"] },
+  { letter:"ד", correct:"Далет", opts:["Тет","Бет","Далет","Йод"] },
+  { letter:"ה", correct:"Хей",   opts:["Алеф","Хей","Хет","Вав"] },
+  { letter:"ו", correct:"Вав",   opts:["Йод","Вав","Зайн","Хет"] },
+  { letter:"ז", correct:"Зайн",  opts:["Зайн","Хет","Тет","Йод"] },
+];
+
+const EX2 = [
+  { heb:"שלום", tr:"шалом",  mean:"👋", meanRu:"Привет" },
+  { heb:"ספר",  tr:"сэфер",  mean:"📚", meanRu:"Книга" },
+  { heb:"בית",  tr:"байт",   mean:"🏠", meanRu:"Дом" },
+  { heb:"שמש",  tr:"шемеш",  mean:"☀️", meanRu:"Солнце" },
+  { heb:"ילד",  tr:"йелед",  mean:"👦", meanRu:"Мальчик" },
+  { heb:"כלב",  tr:"кэлев",  mean:"🐶", meanRu:"Собака" },
+];
+
+const EX3 = [
+  { emoji:"👦", ru:"Мальчик",  heb:"ילד",  correct:"י", opts:["י","ב","ד","א"], hint:"(йелед)" },
+  { emoji:"🏠", ru:"Дом",      heb:"בית",  correct:"ב", opts:["ה","ב","י","ת"], hint:"(байт)" },
+  { emoji:"☀️", ru:"Солнце",  heb:"שמש",  correct:"ש", opts:["מ","ש","ס","ז"], hint:"(шемеш)" },
+  { emoji:"📚", ru:"Книга",    heb:"ספר",  correct:"ס", opts:["ס","ב","פ","ר"], hint:"(сэфер)" },
+  { emoji:"🐶", ru:"Собака",   heb:"כלב",  correct:"כ", opts:["כ","ל","ב","ג"], hint:"(кэлев)" },
+];
+
+const ALL_LETTERS = "א ב ג ד ה ו ז ח ט י כ ל מ נ ס ע פ צ ק ר ש ת".split(" ");
+
+/* =========================================================== */
+/* STATE                                                        */
+/* =========================================================== */
+let S = freshState();
+
+function freshState() {
+  return {
+    ex: 0,
+    q: 0,
+    mistakes: 0,
+    totalStars: 0,
+    answered: false,
+    mSel: null,
+    mDone: new Set(),
+    mMistakes: 0,
+  };
+}
+
+/* =========================================================== */
+/* SCREEN HELPERS                                               */
+/* =========================================================== */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function mascot(text, ms = 2600) {
+  const el = document.getElementById('mascot');
+  const tx = document.getElementById('mascot-txt');
+  if (!el || !tx) return;
+  tx.textContent = text;
+  el.style.display = 'flex';
+  clearTimeout(mascot._t);
+  mascot._t = setTimeout(() => { el.style.display = 'none'; }, ms);
+}
+
+function speak(txt, lang='he-IL') {
+  if (!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(txt);
+  u.lang = lang; u.rate = 0.72; u.pitch = 1.1;
+  speechSynthesis.speak(u);
+}
+
+/* =========================================================== */
+/* PROGRESS + STARS                                             */
+/* =========================================================== */
+function refreshUI() {
+  const tot = EX1.length + EX2.length + EX3.length;
+  let done = 0;
+  if (S.ex === 1) done = S.q;
+  if (S.ex === 2) done = EX1.length + S.mDone.size;
+  if (S.ex === 3) done = EX1.length + EX2.length + S.q;
+  const pct = Math.round(done / tot * 100);
+  const pf = document.getElementById('prog-fill');
+  if (pf) pf.style.width = pct + '%';
+
+  const hs = document.getElementById('hdr-stars');
+  if (hs) {
+    const max = 9;
+    hs.innerHTML = Array.from({length: max}, (_, i) =>
+      `<span style="opacity:${i < S.totalStars ? 1 : .18}; font-size:19px;">⭐</span>`
+    ).join('');
+  }
+}
+
+/* =========================================================== */
+/* CONFETTI                                                     */
+/* =========================================================== */
+const COLORS = ['#FF6B6B','#3ECFBB','#FFD93D','#9B7FE8','#5BC58A','#FF8E53','#F9A8D4'];
+
+function confettiBlast(n = 60, cx = null) {
+  const c = document.getElementById('confetti');
+  const pieces = [];
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement('div');
+    p.className = 'cp';
+    const size = Math.random() * 10 + 5;
+    p.style.cssText = [
+      `left:${cx != null ? cx + (Math.random()-0.5)*30 : Math.random()*100}vw`,
+      `width:${size}px`, `height:${size}px`,
+      `background:${COLORS[Math.random()*COLORS.length|0]}`,
+      `border-radius:${Math.random()>.5?'50%':'3px'}`,
+      `animation-duration:${Math.random()*1.8+1.2}s`,
+      `animation-delay:${Math.random()*0.5}s`,
+    ].join(';');
+    c.appendChild(p);
+    pieces.push(p);
+  }
+  setTimeout(() => pieces.forEach(p => p.remove()), 4000);
+}
+
+/* =========================================================== */
+/* WELCOME INIT                                                 */
+/* =========================================================== */
+function initWelcome() {
+  const grid = document.getElementById('aleph-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  ALL_LETTERS.forEach((l, i) => {
+    const t = document.createElement('div');
+    t.className = 'aleph-tile';
+    t.textContent = l;
+    t.style.animationDelay = (i * 0.04) + 's';
+    t.addEventListener('click', () => speak(l));
+    grid.appendChild(t);
+  });
+}
+
+/* =========================================================== */
+/* START EXERCISE                                               */
+/* =========================================================== */
+const BADGE_COLORS = { 1: 'var(--coral)', 2: 'var(--teal)', 3: 'var(--purple)' };
+const TITLES = { 1:'Угадай букву', 2:'Найди пару', 3:'Первая буква' };
+const SUBS   = {
+  1: 'Как называется эта буква?',
+  2: 'Нажми слово — потом его значение!',
+  3: 'С какой буквы начинается слово?'
+};
+
+function startEx(n) {
+  S.ex = n; S.q = 0; S.mistakes = 0;
+  S.answered = false;
+  S.mSel = null; S.mDone = new Set(); S.mMistakes = 0;
+
+  const badge = document.getElementById('ex-badge');
+  badge.textContent = `Задание ${n} из 3`;
+  badge.style.background = BADGE_COLORS[n];
+  document.getElementById('ex-title').textContent = TITLES[n];
+  document.getElementById('ex-sub').textContent   = SUBS[n];
+  document.getElementById('mascot').style.display = 'none';
+
+  show('s-exercise');
+  refreshUI();
+
+  if (n === 1) drawEx1();
+  else if (n === 2) drawEx2();
+  else drawEx3();
+}
+
+/* =========================================================== */
+/* EXERCISE 1 — Letter Recognition                             */
+/* =========================================================== */
+function drawDots(total, current) {
+  const el = document.getElementById('qdots');
+  if (!el) return;
+  el.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'qdot' + (i < current ? ' done' : '') + (i === current ? ' current' : '');
+    el.appendChild(d);
+  }
+}
+
+function drawEx1() {
+  const q = EX1[S.q];
+  S.answered = false;
+  drawDots(EX1.length, S.q);
+
+  document.getElementById('ex-body').innerHTML = `
+    <div class="big-letter">${q.letter}</div>
+    <div style="text-align:center">
+      <button class="speak-btn" onclick="speak('${q.letter}')">🔊</button>
+    </div>
+    <div class="choices">
+      ${q.opts.map((o,i) => `
+        <button class="choice-btn" id="c1-${i}"
+          onclick="ansEx1(${i},'${o}','${q.correct}')">
+          ${o}
+        </button>`).join('')}
+    </div>`;
+}
+
+function ansEx1(i, chosen, correct) {
+  if (S.answered) return;
+  S.answered = true;
+  document.querySelectorAll('#ex-body .choice-btn').forEach(b => b.disabled = true);
+
+  const btn = document.getElementById('c1-' + i);
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    confettiBlast(22, 50);
+    const ms = ['Правильно! 🎉','Молодец! ⭐','Отлично! 🌟','Умница! 💚','Так держать! 💪'];
+    mascot(ms[Math.random()*ms.length|0]);
+  } else {
+    btn.classList.add('wrong');
+    S.mistakes++;
+    document.querySelectorAll('#ex-body .choice-btn').forEach(b => {
+      if (b.textContent.trim() === correct) b.classList.add('correct');
+    });
+    mascot('Почти! Правильный ответ: ' + correct + ' 💛');
+  }
+
+  setTimeout(() => {
+    S.q++;
+    if (S.q >= EX1.length) showResult(1);
+    else { drawEx1(); refreshUI(); }
+  }, 1300);
+}
+
+/* =========================================================== */
+/* EXERCISE 2 — Word-Meaning Matching                          */
+/* =========================================================== */
+function drawEx2() {
+  document.getElementById('qdots').innerHTML = '';
+  S.mSel = null;
+
+  // Shuffle right column
+  const right = [...EX2].sort(() => Math.random() - 0.5);
+
+  document.getElementById('ex-body').innerHTML = `
+    <div class="match-grid">
+      <div class="match-col" id="mcol-words">
+        ${EX2.map((p, i) => `
+          <div class="match-item" id="mw-${i}" onclick="mPickWord(${i})">
+            <div class="heb-word">${p.heb}</div>
+            <div class="translit">${p.tr}</div>
+            <button class="speak-btn" style="width:30px;height:30px;font-size:13px;margin:3px 0 0"
+              onclick="event.stopPropagation();speak('${p.heb}')">🔊</button>
+          </div>`).join('')}
+      </div>
+      <div class="match-col" id="mcol-mean">
+        ${right.map(p => {
+          const orig = EX2.indexOf(p);
+          return `
+          <div class="match-item" id="mm-${orig}" onclick="mPickMean(${orig})">
+            <div class="m-emoji">${p.mean}</div>
+            <div class="m-text">${p.meanRu}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="match-fb" id="mfb"></div>`;
+}
+
+function mPickWord(i) {
+  if (S.mDone.has(i)) return;
+  document.querySelectorAll('.match-item:not(.matched)').forEach(el => el.classList.remove('selected'));
+  S.mSel = i;
+  const el = document.getElementById('mw-' + i);
+  if (el) el.classList.add('selected');
+}
+
+function mPickMean(orig) {
+  if (S.mDone.has(orig)) return;
+  const fb = document.getElementById('mfb');
+
+  if (S.mSel === null) {
+    if (fb) { fb.textContent = '← Сначала выбери слово слева!'; fb.style.color = 'var(--coral)'; }
+    return;
+  }
+
+  const wEl = document.getElementById('mw-' + S.mSel);
+  const mEl = document.getElementById('mm-' + orig);
+  if (fb) fb.textContent = '';
+
+  if (S.mSel === orig) {
+    // ✅ Correct
+    if (wEl) { wEl.classList.remove('selected'); wEl.classList.add('matched'); }
+    if (mEl) mEl.classList.add('matched');
+    S.mDone.add(orig);
+    confettiBlast(18, 50);
+    const ms = ['Правильно! 🎉','Верно! 💚','Молодец! ⭐','Отлично! 🌟'];
+    if (fb) { fb.textContent = ms[Math.random()*ms.length|0]; fb.style.color = 'var(--green)'; }
+    S.mSel = null;
+    refreshUI();
+    if (S.mDone.size >= EX2.length) setTimeout(() => showResult(2), 900);
+  } else {
+    // ❌ Wrong
+    S.mMistakes++;
+    if (wEl) { wEl.classList.remove('selected'); wEl.classList.add('wrong-shake'); }
+    if (mEl) mEl.classList.add('wrong-shake');
+    setTimeout(() => {
+      if (wEl) wEl.classList.remove('wrong-shake');
+      if (mEl) mEl.classList.remove('wrong-shake');
+    }, 450);
+    if (fb) { fb.textContent = 'Не то — попробуй ещё раз! 💛'; fb.style.color = 'var(--coral)'; }
+    S.mSel = null;
+  }
+}
+
+/* =========================================================== */
+/* EXERCISE 3 — First Letter                                   */
+/* =========================================================== */
+function drawEx3() {
+  const q = EX3[S.q];
+  S.answered = false;
+  drawDots(EX3.length, S.q);
+
+  document.getElementById('ex-body').innerHTML = `
+    <div class="big-emoji">${q.emoji}</div>
+    <div class="big-word">${q.ru} — <span style="direction:rtl;display:inline-block">${q.heb}</span></div>
+    <div class="hint-text">${q.hint}</div>
+    <div style="text-align:center">
+      <button class="speak-btn" onclick="speak('${q.heb}')">🔊</button>
+    </div>
+    <div class="choices">
+      ${q.opts.map((o,i) => `
+        <button class="choice-btn letter-opt" id="c3-${i}"
+          onclick="ansEx3(${i},'${o}','${q.correct}')">
+          ${o}
+        </button>`).join('')}
+    </div>`;
+}
+
+function ansEx3(i, chosen, correct) {
+  if (S.answered) return;
+  S.answered = true;
+  document.querySelectorAll('#ex-body .choice-btn').forEach(b => b.disabled = true);
+
+  const btn = document.getElementById('c3-' + i);
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    confettiBlast(22, 50);
+    const ms = ['Правильно! 🎉','Умница! 🌟','Отлично! 🏆','Молодец! 💪'];
+    mascot(ms[Math.random()*ms.length|0]);
+  } else {
+    btn.classList.add('wrong');
+    S.mistakes++;
+    document.querySelectorAll('#ex-body .choice-btn').forEach(b => {
+      if (b.textContent.trim() === correct) b.classList.add('correct');
+    });
+    mascot('Не совсем — правильная буква: ' + correct + ' 💛');
+  }
+
+  setTimeout(() => {
+    S.q++;
+    if (S.q >= EX3.length) showResult(3);
+    else { drawEx3(); refreshUI(); }
+  }, 1300);
+}
+
+/* =========================================================== */
+/* SHOW RESULT                                                  */
+/* =========================================================== */
+const RES_TITLES = {
+  3: ['Великолепно! 🏆', 'Фантастика! 🌟', 'Супер! 🎊'],
+  2: ['Хорошо! 👍',      'Неплохо! 😊',    'Молодец! 💛'],
+  1: ['Продолжай! 💪',   'Почти! 🌈',      'Не сдавайся! 🔥'],
+};
+
+function calcStars(mistakes, total) {
+  if (mistakes === 0)                          return 3;
+  if (mistakes <= Math.ceil(total * 0.30))     return 3;
+  if (mistakes <= Math.ceil(total * 0.60))     return 2;
+  return 1;
+}
+
+function showResult(exN) {
+  const total = exN === 1 ? EX1.length : exN === 2 ? EX2.length : EX3.length;
+  const errs  = exN === 2 ? S.mMistakes : S.mistakes;
+  const stars = calcStars(errs, total);
+  S.totalStars += stars;
+
+  const tlist  = RES_TITLES[stars];
+  const titles = ['Отлично! 🎉', 'Умница! 🌟', 'Молодец! 💚'];
+
+  document.getElementById('res-emoji').textContent = stars === 3 ? '🎉' : stars === 2 ? '👍' : '💪';
+  document.getElementById('res-title').textContent = tlist[exN - 1] || tlist[0];
+  document.getElementById('res-text').textContent  =
+    `Заработано ${stars} из 3 звёзд!` +
+    (errs === 0 ? ' Ни одной ошибки — идеально!' : ` Ошибок: ${errs}.`);
+
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('st' + i);
+    if (el) {
+      el.classList.remove('earned');
+      if (i <= stars) setTimeout(() => el.classList.add('earned'), i * 220);
+    }
+  }
+
+  const btn = document.getElementById('res-btn');
+  if (exN < 3) {
+    btn.textContent = 'Следующее задание →';
+    btn.onclick = () => startEx(exN + 1);
+  } else {
+    btn.textContent = 'Посмотреть результат! 🏆';
+    btn.onclick = showFinale;
+  }
+
+  if (stars === 3) confettiBlast(70);
+  show('s-result');
+}
+
+/* =========================================================== */
+/* FINALE                                                       */
+/* =========================================================== */
+function showFinale() {
+  const el = document.getElementById('fin-stars');
+  if (el) {
+    el.innerHTML = Array.from({length: 9}, (_, i) =>
+      `<span style="opacity:${i<S.totalStars?1:.18};animation:starPop .5s ${i*.1}s cubic-bezier(.175,.885,.32,1.275) both">⭐</span>`
+    ).join('');
+  }
+  confettiBlast(90);
+  show('s-finale');
+}
+
+function resetGame() {
+  S = freshState();
+  initWelcome();
+  show('s-welcome');
+}
+
+/* =========================================================== */
+/* INIT                                                         */
+/* =========================================================== */
+initWelcome();
+</script>
+</body>
+</html>
