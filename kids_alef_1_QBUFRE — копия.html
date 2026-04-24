@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Иврит Алеф — Повторение</title>
+<style>
+  :root {
+    --yellow:  #FFD93D;
+    --orange:  #FF6B35;
+    --blue:    #4ECDC4;
+    --green:   #6BCB77;
+    --purple:  #9B5DE5;
+    --pink:    #F15BB5;
+    --bg:      #FFF9F0;
+    --card-bg: #FFFFFF;
+    --text:    #2D2D2D;
+    --radius:  20px;
+    --shadow:  0 4px 16px rgba(0,0,0,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== SCREENS ===== */
+  .screen { display: none; min-height: 100vh; padding: 16px; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; }
+
+  /* ===== TOP BAR ===== */
+  .top-bar {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    min-height: 48px;
+  }
+  .back-btn {
+    background: var(--card-bg);
+    border: 3px solid var(--orange);
+    color: var(--orange);
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .back-btn:hover { background: var(--orange); color: #fff; }
+  .screen-title {
+    flex: 1;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    padding: 0 8px;
+  }
+
+  /* ===== HOME ===== */
+  #home {
+    background: linear-gradient(160deg, #FFF3C4 0%, #FFE0CC 50%, #E0F4FF 100%);
+    justify-content: flex-start;
+  }
+  .home-header {
+    text-align: center;
+    padding: 24px 0 8px;
+    width: 100%;
+  }
+  .owl { font-size: 64px; line-height: 1; }
+  .home-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--orange);
+    margin-top: 8px;
+  }
+  .home-subtitle {
+    font-size: 16px;
+    color: #777;
+    margin-top: 4px;
+  }
+  .nav-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 520px;
+    margin-top: 24px;
+  }
+  .nav-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px 16px;
+    cursor: pointer;
+    transition: transform .18s, box-shadow .18s;
+    text-align: center;
+    border: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-card:hover  { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.16); }
+  .nav-card:active { transform: scale(.97); }
+  .nav-card .num {
+    position: absolute; top: 10px; left: 14px;
+    font-size: 13px; font-weight: 700; opacity: .5;
+  }
+  .nav-card .icon  { font-size: 40px; }
+  .nav-card .label { font-size: 15px; font-weight: 700; margin-top: 8px; line-height: 1.3; }
+  .nav-card .hprev { font-size: 22px; margin-top: 6px; font-weight: 700; direction: rtl; letter-spacing: 3px; }
+
+  .nav-card.c1 { border-color: var(--purple); }
+  .nav-card.c1 .num, .nav-card.c1 .hprev { color: var(--purple); }
+  .nav-card.c2 { border-color: var(--blue); }
+  .nav-card.c2 .num, .nav-card.c2 .hprev { color: var(--blue); }
+  .nav-card.c3 { border-color: var(--green); }
+  .nav-card.c3 .num, .nav-card.c3 .hprev { color: var(--green); }
+  .nav-card.c4 { border-color: var(--pink); }
+  .nav-card.c4 .num, .nav-card.c4 .hprev { color: var(--pink); }
+
+  .done-badge {
+    display: none;
+    position: absolute; top: 10px; right: 10px;
+    background: var(--green); color: #fff;
+    border-radius: 50%; width: 26px; height: 26px;
+    font-size: 14px; font-weight: 700;
+    align-items: center; justify-content: center;
+  }
+  .nav-card.done .done-badge { display: flex; }
+
+  /* ===== PROGRESS ===== */
+  .progress-wrap {
+    width: 100%; max-width: 560px;
+    margin-bottom: 16px;
+  }
+  .progress-label { font-size: 14px; color: #888; margin-bottom: 4px; }
+  .progress-bar   { height: 10px; background: #E8E8E8; border-radius: 10px; overflow: hidden; }
+  .progress-fill  {
+    height: 100%; border-radius: 10px;
+    background: linear-gradient(90deg, var(--orange), var(--yellow));
+    transition: width .4s ease; width: 0%;
+  }
+
+  /* ===== QUIZ ===== */
+  .quiz-question {
+    width: 100%; max-width: 560px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px 20px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .quiz-q-label { font-size: 15px; color: #888; margin-bottom: 8px; }
+  .quiz-q-text  { font-size: 32px; font-weight: 900; color: var(--orange); }
+
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%; max-width: 560px;
+  }
+  /* 3 items: make last one span full width */
+  .quiz-options.three .quiz-opt:last-child { grid-column: 1 / -1; }
+
+  .quiz-opt {
+    background: var(--card-bg);
+    border: 3px solid #E8E8E8;
+    border-radius: var(--radius);
+    padding: 18px 10px;
+    font-size: 40px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all .18s;
+    direction: rtl;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.3;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--orange); transform: scale(1.03); }
+  .quiz-opt.correct { border-color: var(--green); background: #F0FFF4; animation: pop .3s ease; }
+  .quiz-opt.wrong   { border-color: #FF6B6B;      background: #FFF0F0; animation: shake .3s ease; }
+  .quiz-opt:disabled { cursor: default; }
+
+  @keyframes pop   { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+  .feedback-row {
+    width: 100%; max-width: 560px;
+    min-height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 14px;
+  }
+  .feedback-msg       { font-size: 20px; font-weight: 800; }
+  .feedback-msg.ok    { color: var(--green); }
+  .feedback-msg.err   { color: #FF6B6B; }
+
+  .next-btn {
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 50px;
+    padding: 12px 28px; font-size: 17px; font-weight: 800;
+    cursor: pointer; transition: transform .15s;
+    display: none;
+  }
+  .next-btn.show  { display: block; }
+  .next-btn:hover { transform: scale(1.04); }
+
+  /* ===== STARS ===== */
+  .stars-row {
+    display: flex; gap: 6px; margin-top: 12px;
+    justify-content: center; flex-wrap: wrap;
+    width: 100%; max-width: 560px;
+  }
+  .star { font-size: 24px; transition: transform .2s; }
+  @keyframes starPop { 0%{transform:scale(0)} 60%{transform:scale(1.3)} 100%{transform:scale(1)} }
+  .star.earned { animation: starPop .4s ease; }
+
+  /* ===== FINISH ===== */
+  .finish-box {
+    text-align: center;
+    width: 100%; max-width: 440px;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 36px 24px;
+    margin-top: 16px;
+  }
+  .finish-box .big-icon { font-size: 72px; }
+  .finish-box h2        { font-size: 28px; font-weight: 900; margin-top: 12px; color: var(--orange); }
+  .finish-box p         { font-size: 16px; color: #888; margin-top: 8px; }
+  .finish-stars         { font-size: 36px; margin-top: 12px; }
+  .finish-btn {
+    margin-top: 24px;
+    background: var(--green); color: #fff;
+    border: none; border-radius: 50px;
+    padding: 14px 36px; font-size: 18px; font-weight: 800;
+    cursor: pointer; transition: transform .15s;
+    box-shadow: 0 4px 12px rgba(107,203,119,.35);
+  }
+  .finish-btn:hover { transform: scale(1.04); }
+
+  /* ===== CONFETTI ===== */
+  #confetti-canvas {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 999;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 420px) {
+    .nav-grid  { gap: 12px; }
+    .nav-card  { padding: 18px 10px; }
+    .nav-card .icon { font-size: 32px; }
+    .nav-card .hprev { font-size: 18px; }
+    .home-title { font-size: 22px; }
+    .quiz-q-text { font-size: 26px; }
+    .quiz-opt    { font-size: 32px; min-height: 70px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ===================== HOME ===================== -->
+<div id="home" class="screen active">
+  <div class="home-header">
+    <div class="owl">🦉</div>
+    <div class="home-title">Иврит Алеф</div>
+    <div class="home-subtitle">Выбери упражнение для повторения</div>
+  </div>
+  <div class="nav-grid">
+    <div class="nav-card c1" onclick="startEx(1)">
+      <span class="num">1</span>
+      <div class="done-badge">✓</div>
+      <div class="icon">🔤</div>
+      <div class="label">Буквы</div>
+      <div class="hprev">א ה י נ מ ת</div>
+    </div>
+    <div class="nav-card c2" onclick="startEx(2)">
+      <span class="num">2</span>
+      <div class="done-badge">✓</div>
+      <div class="icon">✨</div>
+      <div class="label">Огласовки 1</div>
+      <div class="hprev">אַ אָ אֲ</div>
+    </div>
+    <div class="nav-card c3" onclick="startEx(3)">
+      <span class="num">3</span>
+      <div class="done-badge">✓</div>
+      <div class="icon">🌟</div>
+      <div class="label">Огласовки 2</div>
+      <div class="hprev">תְ מְ נְ יְ</div>
+    </div>
+    <div class="nav-card c4" onclick="startEx(4)">
+      <span class="num">4</span>
+      <div class="done-badge">✓</div>
+      <div class="icon">💬</div>
+      <div class="label">Слова</div>
+      <div class="hprev">הַי את</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== EX 1 ===================== -->
+<div id="ex1" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goHome()">← Назад</button>
+    <div class="screen-title">🔤 Буквы</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="ex1-prog-label">Вопрос 1 из 6</div>
+    <div class="progress-bar"><div class="progress-fill" id="ex1-prog-fill"></div></div>
+  </div>
+  <div id="ex1-quiz" style="width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center;">
+    <div class="quiz-question">
+      <div class="quiz-q-label">Найди эту букву:</div>
+      <div class="quiz-q-text" id="ex1-q-text"></div>
+    </div>
+    <div class="quiz-options" id="ex1-options"></div>
+    <div class="feedback-row">
+      <div class="feedback-msg" id="ex1-feedback"></div>
+      <button class="next-btn" id="ex1-next-q" onclick="nextQuestion('ex1')">Дальше →</button>
+    </div>
+    <div class="stars-row" id="ex1-stars"></div>
+  </div>
+  <div id="ex1-finish" style="display:none;width:100%;max-width:440px;">
+    <div class="finish-box">
+      <div class="big-icon">🎉</div>
+      <h2>Отлично!</h2>
+      <p>Ты повторил все буквы!</p>
+      <div class="finish-stars" id="ex1-finish-stars"></div>
+      <button class="finish-btn" onclick="goHome()">← На главную</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== EX 2 ===================== -->
+<div id="ex2" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goHome()">← Назад</button>
+    <div class="screen-title">✨ Огласовки 1</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="ex2-prog-label">Вопрос 1 из 6</div>
+    <div class="progress-bar"><div class="progress-fill" id="ex2-prog-fill"></div></div>
+  </div>
+  <div id="ex2-quiz" style="width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center;">
+    <div class="quiz-question">
+      <div class="quiz-q-label">Найди это сочетание:</div>
+      <div class="quiz-q-text" id="ex2-q-text"></div>
+    </div>
+    <div class="quiz-options" id="ex2-options"></div>
+    <div class="feedback-row">
+      <div class="feedback-msg" id="ex2-feedback"></div>
+      <button class="next-btn" id="ex2-next-q" onclick="nextQuestion('ex2')">Дальше →</button>
+    </div>
+    <div class="stars-row" id="ex2-stars"></div>
+  </div>
+  <div id="ex2-finish" style="display:none;width:100%;max-width:440px;">
+    <div class="finish-box">
+      <div class="big-icon">🌟</div>
+      <h2>Молодец!</h2>
+      <p>Ты повторил огласовки!</p>
+      <div class="finish-stars" id="ex2-finish-stars"></div>
+      <button class="finish-btn" onclick="goHome()">← На главную</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== EX 3 ===================== -->
+<div id="ex3" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goHome()">← Назад</button>
+    <div class="screen-title">🌟 Огласовки 2</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="ex3-prog-label">Вопрос 1 из 4</div>
+    <div class="progress-bar"><div class="progress-fill" id="ex3-prog-fill"></div></div>
+  </div>
+  <div id="ex3-quiz" style="width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center;">
+    <div class="quiz-question">
+      <div class="quiz-q-label">Найди это сочетание:</div>
+      <div class="quiz-q-text" id="ex3-q-text"></div>
+    </div>
+    <div class="quiz-options" id="ex3-options"></div>
+    <div class="feedback-row">
+      <div class="feedback-msg" id="ex3-feedback"></div>
+      <button class="next-btn" id="ex3-next-q" onclick="nextQuestion('ex3')">Дальше →</button>
+    </div>
+    <div class="stars-row" id="ex3-stars"></div>
+  </div>
+  <div id="ex3-finish" style="display:none;width:100%;max-width:440px;">
+    <div class="finish-box">
+      <div class="big-icon">💫</div>
+      <h2>Супер!</h2>
+      <p>Огласовки пройдены!</p>
+      <div class="finish-stars" id="ex3-finish-stars"></div>
+      <button class="finish-btn" onclick="goHome()">← На главную</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== EX 4 ===================== -->
+<div id="ex4" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goHome()">← Назад</button>
+    <div class="screen-title">💬 Слова</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="ex4-prog-label">Вопрос 1 из 3</div>
+    <div class="progress-bar"><div class="progress-fill" id="ex4-prog-fill"></div></div>
+  </div>
+  <div id="ex4-quiz" style="width:100%;max-width:560px;display:flex;flex-direction:column;align-items:center;">
+    <div class="quiz-question">
+      <div class="quiz-q-label">Найди слово:</div>
+      <div class="quiz-q-text" id="ex4-q-text"></div>
+    </div>
+    <div class="quiz-options" id="ex4-options"></div>
+    <div class="feedback-row">
+      <div class="feedback-msg" id="ex4-feedback"></div>
+      <button class="next-btn" id="ex4-next-q" onclick="nextQuestion('ex4')">Дальше →</button>
+    </div>
+    <div class="stars-row" id="ex4-stars"></div>
+  </div>
+  <div id="ex4-finish" style="display:none;width:100%;max-width:440px;">
+    <div class="finish-box">
+      <div class="big-icon">🏆</div>
+      <h2>Ура! Всё готово!</h2>
+      <p>Слова пройдены!</p>
+      <div class="finish-stars" id="ex4-finish-stars"></div>
+      <button class="finish-btn" onclick="goHome()">← На главную</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  DATA
+// ============================================================
+const DATA = {
+  ex1: {
+    cards: [
+      { front:'א', name:'Алеф' },
+      { front:'ה', name:'Хей'  },
+      { front:'י', name:'Йод'  },
+      { front:'נ', name:'Нун'  },
+      { front:'מ', name:'Мем'  },
+      { front:'ת', name:'Тав'  },
+    ],
+    qLabel: 'Найди эту букву:',
+    getQ:   c => c.name,          // question text (Russian)
+    getOpt: c => c.front,         // option text (Hebrew)
+  },
+  ex2: {
+    cards: [
+      { front:'הֲ', name:'hа (хатаф-патах)' },
+      { front:'יָ', name:'йа (камац)'        },
+      { front:'אֲ', name:'а (хатаф-патах)'  },
+      { front:'הָ', name:'hа (камац)'        },
+      { front:'יַ', name:'йа (патах)'        },
+      { front:'אַ', name:'а (патах)'         },
+    ],
+    qLabel: 'Найди это сочетание:',
+    getQ:   c => c.name,
+    getOpt: c => c.front,
+  },
+  ex3: {
+    cards: [
+      { front:'תְ', name:'тэ' },
+      { front:'מְ', name:'мэ' },
+      { front:'נְ', name:'нэ' },
+      { front:'יְ', name:'йэ' },
+    ],
+    qLabel: 'Найди это сочетание:',
+    getQ:   c => c.name,
+    getOpt: c => c.front,
+  },
+  ex4: {
+    cards: [
+      { front:'הַי',        name:'Привет!'     },
+      { front:'את',         name:'Ты (девочка)'},
+      { front:'אַי יַי יַי', name:'Ай-яй-яй!'  },
+    ],
+    qLabel: 'Найди слово:',
+    getQ:   c => c.name,
+    getOpt: c => c.front,
+  },
+};
+
+// ============================================================
+//  STATE
+// ============================================================
+const STATE = {};
+['ex1','ex2','ex3','ex4'].forEach(id => {
+  STATE[id] = { items:[], idx:0, score:0, answered:false };
+});
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome() { showScreen('home'); }
+
+function startEx(n) {
+  const id = 'ex' + n;
+  const d  = DATA[id];
+  const s  = STATE[id];
+
+  // Build shuffled question list
+  s.items = d.cards.map((_,i) => i);
+  shuffle(s.items);
+  s.idx      = 0;
+  s.score    = 0;
+  s.answered = false;
+
+  // Show quiz, hide finish
+  document.getElementById(id + '-quiz').style.display   = '';
+  document.getElementById(id + '-finish').style.display = 'none';
+
+  // Stars
+  const starsEl = document.getElementById(id + '-stars');
+  starsEl.innerHTML = d.cards.map(() => '<span class="star">☆</span>').join('');
+
+  showScreen(id);
+  renderQuestion(id);
+}
+
+// ============================================================
+//  QUIZ
+// ============================================================
+function renderQuestion(id) {
+  const d = DATA[id];
+  const s = STATE[id];
+  s.answered = false;
+
+  const correctIdx  = s.items[s.idx];
+  const correctCard = d.cards[correctIdx];
+
+  // Distractors
+  const others = d.cards.map((_,i) => i).filter(i => i !== correctIdx);
+  shuffle(others);
+  const optIdxs = [correctIdx, ...others.slice(0, Math.min(3, others.length))];
+  shuffle(optIdxs);
+
+  // Question text
+  document.getElementById(id + '-q-text').textContent = d.getQ(correctCard);
+
+  // Options
+  const optEl = document.getElementById(id + '-options');
+  optEl.innerHTML = '';
+  // Mark grid as "three" when only 3 options (ex4)
+  optEl.className = 'quiz-options' + (optIdxs.length === 3 ? ' three' : '');
+
+  optIdxs.forEach(idx => {
+    const btn = document.createElement('button');
+    btn.className       = 'quiz-opt';
+    btn.textContent     = d.getOpt(d.cards[idx]);
+    btn.dataset.idx     = idx;
+    btn.onclick         = () => answerQuiz(id, idx, correctIdx, btn);
+    optEl.appendChild(btn);
+  });
+
+  // Reset feedback / next btn
+  const fb = document.getElementById(id + '-feedback');
+  fb.textContent = '';
+  fb.className   = 'feedback-msg';
+  document.getElementById(id + '-next-q').classList.remove('show');
+
+  // Progress
+  const total = s.items.length;
+  const pct   = (s.idx / total) * 100;
+  document.getElementById(id + '-prog-fill').style.width  = pct + '%';
+  document.getElementById(id + '-prog-label').textContent = 'Вопрос ' + (s.idx + 1) + ' из ' + total;
+}
+
+function answerQuiz(id, chosen, correct, btn) {
+  const s = STATE[id];
+  if (s.answered) return;
+  s.answered = true;
+
+  const optEl = document.getElementById(id + '-options');
+  optEl.querySelectorAll('.quiz-opt').forEach(b => { b.disabled = true; });
+
+  const fb = document.getElementById(id + '-feedback');
+  const nb = document.getElementById(id + '-next-q');
+
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    fb.textContent = '✅ Правильно!';
+    fb.className   = 'feedback-msg ok';
+    s.score++;
+    // Light up star
+    const stars = document.getElementById(id + '-stars').querySelectorAll('.star');
+    if (stars[s.idx]) { stars[s.idx].textContent = '⭐'; stars[s.idx].classList.add('earned'); }
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ Попробуй ещё раз!';
+    fb.className   = 'feedback-msg err';
+    optEl.querySelectorAll('.quiz-opt').forEach(b => {
+      if (parseInt(b.dataset.idx) === correct) b.classList.add('correct');
+    });
+  }
+  nb.classList.add('show');
+}
+
+function nextQuestion(id) {
+  const s = STATE[id];
+  s.idx++;
+  if (s.idx >= s.items.length) showFinish(id);
+  else renderQuestion(id);
+}
+
+function showFinish(id) {
+  const s = STATE[id];
+  document.getElementById(id + '-quiz').style.display   = 'none';
+  document.getElementById(id + '-finish').style.display = '';
+  document.getElementById(id + '-prog-fill').style.width = '100%';
+
+  const total = s.items.length;
+  const pct   = s.score / total;
+  const stars = pct === 1 ? '⭐⭐⭐' : pct >= 0.7 ? '⭐⭐' : '⭐';
+  document.getElementById(id + '-finish-stars').textContent = stars;
+
+  // Mark nav card done
+  const n   = parseInt(id.replace('ex','')) - 1;
+  const cards = document.querySelectorAll('.nav-card');
+  if (cards[n]) cards[n].classList.add('done');
+
+  launchConfetti();
+}
+
+// ============================================================
+//  CONFETTI
+// ============================================================
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors  = ['#FFD93D','#FF6B35','#4ECDC4','#6BCB77','#9B5DE5','#F15BB5'];
+  const pieces  = Array.from({length:80}, () => ({
+    x:     Math.random() * canvas.width,
+    y:     Math.random() * canvas.height - canvas.height,
+    w:     Math.random() * 12 + 6,
+    h:     Math.random() * 6  + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    speed: Math.random() * 3  + 2,
+    angle: Math.random() * 360,
+    spin:  (Math.random() - .5) * 6,
+  }));
+  let frame = 0;
+  (function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.y += p.speed; p.angle += p.spin;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    if (++frame < 100) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  })();
+}
+
+// ============================================================
+//  UTILS
+// ============================================================
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+</script>
+</body>
+</html>
